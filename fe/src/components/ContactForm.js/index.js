@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 
+import { useState, useRef } from 'react';
 import FormGoup from '../FormGroup';
 import { Form, ButtonContainer } from './styles';
 
@@ -8,14 +9,24 @@ import Select from '../Select';
 import Button from '../Button';
 
 export default function ContacForm({ buttonLabel }) {
+  const [name, setName] = useState('');
+
+  const email = useRef(null);
+
   return (
     <Form>
       <FormGoup>
-        <Input placeholder="Nome" />
+        <Input
+          placeholder="Nome"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+        />
       </FormGoup>
 
-      <FormGoup>
-        <Input placeholder="E-mail" />
+      <FormGoup
+        error="O formato do e-mail é inválido"
+      >
+        <Input placeholder="E-mail" ref={email} />
       </FormGoup>
 
       <FormGoup>
