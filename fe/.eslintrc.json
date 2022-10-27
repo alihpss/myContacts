@@ -5,6 +5,7 @@
     },
     "extends": [
         "plugin:react/recommended",
+        "plugin:react-hooks/recommended",
         "airbnb"
     ],
     "overrides": [
@@ -14,7 +15,8 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "react-hooks"
     ],
     "rules": {
         "linebreak-style": ["error", "windows"],
@@ -23,6 +25,10 @@
         ],
         "react/react-in-jsx-scope": "off",
         "import/prefer-default-export": "off",
-        "react/jsx-no-bind": "off"
+        "react/jsx-no-bind": "off",
+        "class-methods-use-this": "off",
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn"
+
     }
 }
