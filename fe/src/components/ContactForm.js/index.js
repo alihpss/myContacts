@@ -13,12 +13,14 @@ import Input from '../Input';
 import Select from '../Select';
 import Button from '../Button';
 
-export default function ContacForm({ buttonLabel }) {
+export default function ContacForm({ buttonLabel, onSubmit }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [categories, setCategories] = useState([]);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     getErrorMessageByFieldName, removeError, setError, errors,
@@ -32,7 +34,9 @@ export default function ContacForm({ buttonLabel }) {
         const categoriesList = await CategoriesService.listCategories();
 
         setCategories(categoriesList);
-      } catch {}
+      } catch {} finally {
+        setIsLoadingCategories(false);
+      }
     }
 
     loadCategories();
@@ -62,8 +66,16 @@ export default function ContacForm({ buttonLabel }) {
     setPhone(formatPhone(event.target.value));
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
+
+    setIsSubmitting(true);
+
+    await onSubmit({
+      name, email, phone, categoryId,
+    });
+
+    setIsSubmitting(false);
   }
 
   return (
@@ -74,6 +86,7 @@ export default function ContacForm({ buttonLabel }) {
           placeholder="Nome *"
           value={name}
           onChange={handleNameChange}
+          disabled={isSubmitting}
         />
       </FormGoup>
 
@@ -84,6 +97,7 @@ export default function ContacForm({ buttonLabel }) {
           placeholder="E-mail"
           value={email}
           onChange={handleEmailChange}
+          disabled={isSubmitting}
         />
       </FormGoup>
 
@@ -93,13 +107,15 @@ export default function ContacForm({ buttonLabel }) {
           value={phone}
           onChange={handlePhoneChange}
           maxLength="15"
+          disabled={isSubmitting}
         />
       </FormGoup>
 
-      <FormGoup>
+      <FormGoup isLoading={isLoadingCategories}>
         <Select
           value={categoryId}
           onChange={(event) => setCategoryId(event.target.value)}
+          disabled={isLoadingCategories || isSubmitting}
         >
           <option value="">Sem categoria</option>
           {categories.map((category) => (
@@ -114,7 +130,11 @@ export default function ContacForm({ buttonLabel }) {
       </FormGoup>
 
       <ButtonContainer>
-        <Button type="submit" disabled={!isFormValid}>
+        <Button
+          type="submit"
+          disabled={!isFormValid}
+          isLoading={isSubmitting}
+        >
           {buttonLabel}
         </Button>
       </ButtonContainer>
@@ -125,4 +145,5 @@ export default function ContacForm({ buttonLabel }) {
 
 ContacForm.propTypes = {
   buttonLabel: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };
