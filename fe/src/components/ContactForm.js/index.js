@@ -76,8 +76,11 @@ export default function ContacForm({ buttonLabel, onSubmit }) {
     });
 
     setIsSubmitting(false);
+    setName('');
+    setEmail('');
+    setPhone('');
+    setCategoryId('');
   }
-
   return (
     <Form onSubmit={handleSubmit} noValidate>
       <FormGoup error={getErrorMessageByFieldName('name')}>
